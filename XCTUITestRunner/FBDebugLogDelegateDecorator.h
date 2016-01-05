@@ -8,11 +8,10 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <XCTWebDriverAgentLib/XCDebugLogDelegate-Protocol.h>
 
-@interface FBXCTWebDriverAgent : NSObject
+@interface FBDebugLogDelegateDecorator : NSObject <XCDebugLogDelegate>
 
-- (void)start;
-
-- (void)handleTestFailureWithDescription:(NSString *)failureDescription;
++ (void)decorateXCTestLogger;
 
 @end

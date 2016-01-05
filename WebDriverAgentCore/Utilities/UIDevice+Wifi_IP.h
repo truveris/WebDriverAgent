@@ -7,12 +7,10 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@interface FBXCTWebDriverAgent : NSObject
+@interface UIDevice (Wifi_IP)
 
-- (void)start;
-
-- (void)handleTestFailureWithDescription:(NSString *)failureDescription;
+- (NSString *)wifiIPAddress;
 
 @end

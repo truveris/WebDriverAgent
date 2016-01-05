@@ -9,10 +9,4 @@
 
 #import <Foundation/Foundation.h>
 
-@interface FBXCTWebDriverAgent : NSObject
-
-- (void)start;
-
-- (void)handleTestFailureWithDescription:(NSString *)failureDescription;
-
-@end
+NSArray *FBClassesThatConformsToProtocol(Protocol *protocol);
