@@ -14,6 +14,7 @@
 #import "FBResponsePayload.h"
 #import "FBRoute.h"
 #import "FBRouteRequest.h"
+#include <notify.h>
 
 @implementation FBCustomCommands
 
@@ -24,6 +25,20 @@
     [[FBRoute POST:@"/deactivateApp"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
       [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
       return FBResponseDictionaryWithOK();
+    }],
+    [[FBRoute POST:@"/touch_id_fail"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
+        if (notify_post("com.apple.BiometricKit_Sim.fingerTouch.nomatch")) {
+            return FBResponseDictionaryWithOK();
+        } else {
+            return FBResponseDictionaryWithStatus(FBCommandStatusUnsupported, nil);
+        }
+    }],
+    [[FBRoute POST:@"/touch_id_success"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
+        if (notify_post("com.apple.BiometricKit_Sim.fingerTouch.match")) {
+            return FBResponseDictionaryWithOK();
+        } else {
+            return FBResponseDictionaryWithStatus(FBCommandStatusUnsupported, nil);
+        }
     }],
     [[FBRoute POST:@"/timeouts/implicit_wait"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
       // This method is intentionally not supported.
