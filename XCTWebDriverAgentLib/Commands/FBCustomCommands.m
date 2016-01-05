@@ -11,6 +11,7 @@
 
 #import <XCTest/XCUIDevice.h>
 
+#import "FBXCTSession.h"
 #import "FBResponsePayload.h"
 #import "FBRoute.h"
 #import "FBRouteRequest.h"
@@ -25,6 +26,11 @@
     [[FBRoute POST:@"/deactivateApp"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
       [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
       return FBResponseDictionaryWithOK();
+    }],
+    [[FBRoute POST:@"/hide_keyboard"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
+        FBXCTSession *session = (FBXCTSession *)request.session;
+        [[session.application.windows elementAtIndex:0] tap];
+        return FBResponseDictionaryWithOK();
     }],
     [[FBRoute POST:@"/touch_id_fail"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
         if (notify_post("com.apple.BiometricKit_Sim.fingerTouch.nomatch")) {
