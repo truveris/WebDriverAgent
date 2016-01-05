@@ -10,6 +10,7 @@
 #import <XCTest/XCTest.h>
 
 #import <XCTWebDriverAgentLib/_XCTestCaseImplementation.h>
+#import <XCTWebDriverAgentLib/FBCoreExceptionHandler.h>
 #import <XCTWebDriverAgentLib/FBWDALogger.h>
 #import <XCTWebDriverAgentLib/FBXCTWebDriverAgent.h>
 #import <XCTWebDriverAgentLib/XCTestCase.h>
@@ -47,6 +48,7 @@
 
 
 @interface UITestingUITests : XCTestCase
+@property (nonatomic, strong) FBXCTWebDriverAgent *agent;
 @end
 
 @implementation UITestingUITests
@@ -61,17 +63,19 @@
 {
   [super setUp];
   self.continueAfterFailure = YES;
+  self.agent = [FBXCTWebDriverAgent new];
 }
 
 - (void)testRunner
 {
   self.internalImplementation = (_XCTestCaseImplementation *)[FBXCTestCaseImplementationFailureHoldingProxy proxyWithXCTestCaseImplementation:self.internalImplementation];
-  [[FBXCTWebDriverAgent sharedAgent] start];
+  [self.agent start];
 }
 
 - (void)_enqueueFailureWithDescription:(NSString *)description inFile:(NSString *)filePath atLine:(NSUInteger)lineNumber expected:(BOOL)expected
 {
   [FBWDALogger logFmt:@"Enqueue Failure: %@ %@ %lu %d", description, filePath, (unsigned long)lineNumber, expected];
+  [self.agent handleTestFailureWithDescription:description];
 }
 
 @end
