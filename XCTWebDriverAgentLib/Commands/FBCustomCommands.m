@@ -15,6 +15,8 @@
 #import "FBResponsePayload.h"
 #import "FBRoute.h"
 #import "FBRouteRequest.h"
+#import "FBXCTSession.h"
+#import "XCUIApplication+SpringBoard.h"
 
 @implementation FBCustomCommands
 
@@ -23,7 +25,15 @@
   return
   @[
     [[FBRoute POST:@"/deactivateApp"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
+      NSString *applicationIdentifier = ((FBXCTSession *)request.session).application.label;
+
       [[XCUIDevice sharedDevice] pressButton:XCUIDeviceButtonHome];
+
+      NSNumber *requestedDuration = request.arguments[@"duration"];
+      CGFloat duration = (requestedDuration ? requestedDuration.floatValue : 3.f);
+      [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:duration]];
+
+      [[XCUIApplication fb_SpringBoard] fb_tapApplicationWithIdentifier:applicationIdentifier];
       return FBResponseDictionaryWithOK();
     }],
     [[FBRoute POST:@"/timeouts/implicit_wait"] respond: ^ id<FBResponsePayload> (FBRouteRequest *request) {
